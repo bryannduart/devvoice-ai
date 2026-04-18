@@ -1,4 +1,5 @@
 import os
+import base64
 import tempfile
 from pathlib import Path
 
@@ -40,9 +41,7 @@ Seu papel:
 
 @app.get("/")
 def read_root():
-    return {
-        "message": "DevVoice AI backend online"
-    }
+    return {"message": "DevVoice AI backend online"}
 
 
 @app.get("/health")
@@ -65,17 +64,15 @@ def health_check():
 
 @app.post("/ask")
 async def ask_devvoice(audio: UploadFile = File(...)):
-    """
-    Recebe um áudio, transcreve e gera uma resposta da IA.
-    """
     suffix = Path(audio.filename).suffix if audio.filename else ".webm"
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_audio:
         temp_audio.write(await audio.read())
         temp_audio_path = temp_audio.name
 
+    speech_file_path = None
+
     try:
-        # 1. Transcrição do áudio
         with open(temp_audio_path, "rb") as audio_file:
             transcription = client.audio.transcriptions.create(
                 model="gpt-4o-mini-transcribe",
@@ -84,26 +81,33 @@ async def ask_devvoice(audio: UploadFile = File(...)):
 
         user_text = transcription.text.strip()
 
-        # 2. Resposta da IA
         response = client.responses.create(
             model="gpt-4.1-mini",
             input=[
-                {
-                    "role": "system",
-                    "content": SYSTEM_PROMPT
-                },
-                {
-                    "role": "user",
-                    "content": user_text
-                }
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_text}
             ]
         )
 
         answer_text = response.output_text.strip()
 
+        speech_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3").name
+
+        with client.audio.speech.with_streaming_response.create(
+            model="gpt-4o-mini-tts",
+            voice="alloy",
+            input=answer_text,
+        ) as speech_response:
+            speech_response.stream_to_file(speech_file_path)
+
+        with open(speech_file_path, "rb") as audio_response_file:
+            audio_base64 = base64.b64encode(audio_response_file.read()).decode("utf-8")
+
         return JSONResponse({
             "transcription": user_text,
-            "response_text": answer_text
+            "response_text": answer_text,
+            "response_audio_base64": audio_base64,
+            "audio_mime_type": "audio/mpeg"
         })
 
     except Exception as e:
@@ -115,3 +119,6 @@ async def ask_devvoice(audio: UploadFile = File(...)):
     finally:
         if os.path.exists(temp_audio_path):
             os.remove(temp_audio_path)
+
+        if speech_file_path and os.path.exists(speech_file_path):
+            os.remove(speech_file_path)

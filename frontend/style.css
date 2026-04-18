@@ -85,3 +85,8 @@ button:disabled {
   line-height: 1.6;
   white-space: pre-wrap;
 }
+
+audio {
+  width: 100%;
+  margin-top: 8px;
+}
