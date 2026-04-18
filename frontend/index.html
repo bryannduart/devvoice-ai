@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevVoice AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>DevVoice AI</h1>
+      <p class="subtitle">
+        Assistente virtual por voz para programação, estudos e evolução como desenvolvedor.
+      </p>
+
+      <div class="controls">
+        <button id="startBtn">Começar gravação</button>
+        <button id="stopBtn" disabled>Parar gravação</button>
+      </div>
+
+      <p id="status">Status: aguardando gravação...</p>
+
+      <div class="result-box">
+        <h2>Transcrição</h2>
+        <p id="transcription">---</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
