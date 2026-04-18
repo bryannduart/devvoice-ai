@@ -2,6 +2,7 @@ const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 const statusText = document.getElementById("status");
 const transcriptionEl = document.getElementById("transcription");
+const responseTextEl = document.getElementById("responseText");
 
 let mediaRecorder;
 let audioChunks = [];
@@ -10,6 +11,7 @@ let stream;
 startBtn.addEventListener("click", async () => {
   try {
     transcriptionEl.textContent = "---";
+    responseTextEl.textContent = "---";
     statusText.textContent = "Status: solicitando acesso ao microfone...";
 
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -30,14 +32,14 @@ startBtn.addEventListener("click", async () => {
     };
 
     mediaRecorder.onstop = async () => {
-      statusText.textContent = "Status: enviando áudio para transcrição...";
+      statusText.textContent = "Status: enviando áudio para o DevVoice AI...";
 
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/transcribe", {
+        const response = await fetch("http://127.0.0.1:8000/ask", {
           method: "POST",
           body: formData,
         });
@@ -45,13 +47,15 @@ startBtn.addEventListener("click", async () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Erro ao transcrever áudio.");
+          throw new Error(data.error || "Erro ao processar áudio.");
         }
 
         transcriptionEl.textContent = data.transcription;
-        statusText.textContent = "Status: transcrição concluída.";
+        responseTextEl.textContent = data.response_text;
+        statusText.textContent = "Status: resposta concluída.";
       } catch (error) {
         transcriptionEl.textContent = "---";
+        responseTextEl.textContent = "---";
         statusText.textContent = `Erro: ${error.message}`;
       } finally {
         startBtn.disabled = false;
