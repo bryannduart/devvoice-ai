@@ -3,6 +3,7 @@ const stopBtn = document.getElementById("stopBtn");
 const statusText = document.getElementById("status");
 const transcriptionEl = document.getElementById("transcription");
 const responseTextEl = document.getElementById("responseText");
+const responseAudioEl = document.getElementById("responseAudio");
 
 let mediaRecorder;
 let audioChunks = [];
@@ -12,7 +13,8 @@ startBtn.addEventListener("click", async () => {
   try {
     transcriptionEl.textContent = "---";
     responseTextEl.textContent = "---";
-    statusText.textContent = "Status: solicitando acesso ao microfone...";
+    responseAudioEl.src = "";
+    statusText.textContent = "Solicitando acesso ao microfone...";
 
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -26,13 +28,13 @@ startBtn.addEventListener("click", async () => {
     };
 
     mediaRecorder.onstart = () => {
-      statusText.textContent = "Status: gravando...";
+      statusText.textContent = "Gravando sua pergunta...";
       startBtn.disabled = true;
       stopBtn.disabled = false;
     };
 
     mediaRecorder.onstop = async () => {
-      statusText.textContent = "Status: enviando áudio para o DevVoice AI...";
+      statusText.textContent = "Enviando áudio para o DevVoice AI...";
 
       const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
       const formData = new FormData();
@@ -52,10 +54,20 @@ startBtn.addEventListener("click", async () => {
 
         transcriptionEl.textContent = data.transcription;
         responseTextEl.textContent = data.response_text;
-        statusText.textContent = "Status: resposta concluída.";
+
+        const audioSrc = `data:${data.audio_mime_type};base64,${data.response_audio_base64}`;
+        responseAudioEl.src = audioSrc;
+
+        try {
+          await responseAudioEl.play();
+        } catch {
+        }
+
+        statusText.textContent = "Resposta concluída com sucesso.";
       } catch (error) {
         transcriptionEl.textContent = "---";
         responseTextEl.textContent = "---";
+        responseAudioEl.src = "";
         statusText.textContent = `Erro: ${error.message}`;
       } finally {
         startBtn.disabled = false;

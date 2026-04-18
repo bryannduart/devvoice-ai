@@ -7,34 +7,86 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
-    <section class="card">
-      <h1>DevVoice AI</h1>
-      <p class="subtitle">
-        Assistente virtual por voz para programação, estudos e evolução como desenvolvedor.
-      </p>
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
 
-      <div class="controls">
-        <button id="startBtn">Começar gravação</button>
-        <button id="stopBtn" disabled>Parar gravação</button>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <span class="badge">VOICE AI</span>
+        <h1>DevVoice AI</h1>
+        <p>
+          Assistente virtual por voz para programação, estudos e evolução como desenvolvedor.
+        </p>
       </div>
 
-      <p id="status">Status: aguardando gravação...</p>
-
-      <div class="result-box">
-        <h2>Transcrição</h2>
-        <p id="transcription">---</p>
+      <div class="side-card">
+        <h2>Status do sistema</h2>
+        <p id="status" class="status-text">Status: aguardando gravação...</p>
       </div>
 
-      <div class="result-box">
-        <h2>Resposta do DevVoice AI</h2>
-        <p id="responseText">---</p>
+      <div class="side-card">
+        <h2>Como usar</h2>
+        <ul class="tips-list">
+          <li>Clique em <strong>Começar gravação</strong></li>
+          <li>Faça sua pergunta por voz</li>
+          <li>Clique em <strong>Parar gravação</strong></li>
+          <li>Leia e ouça a resposta do DevVoice AI</li>
+        </ul>
       </div>
 
-      <div class="result-box">
-        <h2>Áudio da resposta</h2>
-        <audio id="responseAudio" controls></audio>
+      <div class="side-card">
+        <h2>Exemplos de perguntas</h2>
+        <ul class="tips-list">
+          <li>Explique o que é uma API</li>
+          <li>O que é SQL JOIN?</li>
+          <li>Como aprender JavaScript?</li>
+          <li>Explique POO de forma simples</li>
+        </ul>
       </div>
+    </aside>
+
+    <section class="main-panel">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">ASSISTENTE DE PROGRAMAÇÃO POR VOZ</p>
+          <h2>Converse com um mentor técnico inteligente</h2>
+          <p class="hero-description">
+            Grave uma pergunta, envie para o DevVoice AI e receba orientação técnica em texto e voz.
+          </p>
+        </div>
+
+        <div class="controls">
+          <button id="startBtn">Começar gravação</button>
+          <button id="stopBtn" disabled>Parar gravação</button>
+        </div>
+      </header>
+
+      <section class="content-grid">
+        <article class="panel-card">
+          <div class="card-header">
+            <span class="card-dot"></span>
+            <h3>Transcrição</h3>
+          </div>
+          <p id="transcription" class="card-content">---</p>
+        </article>
+
+        <article class="panel-card">
+          <div class="card-header">
+            <span class="card-dot"></span>
+            <h3>Resposta do DevVoice AI</h3>
+          </div>
+          <p id="responseText" class="card-content">---</p>
+        </article>
+
+        <article class="panel-card full-width">
+          <div class="card-header">
+            <span class="card-dot"></span>
+            <h3>Áudio da resposta</h3>
+          </div>
+          <audio id="responseAudio" controls></audio>
+        </article>
+      </section>
     </section>
   </main>
 
