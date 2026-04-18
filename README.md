@@ -117,3 +117,91 @@ devvoice-ai/
 ├── README.md
 └── LICENSE
 ```
+
+---
+
+## Arquitetura do projeto
+
+O sistema foi dividido em duas camadas principais:
+
+### Frontend
+Responsável por capturar o áudio do usuário, enviar o arquivo para o backend e exibir a transcrição, a resposta em texto e o áudio retornado pelo assistente.
+
+### Backend
+Responsável por receber o áudio, processar a transcrição, gerar a resposta com IA, converter a resposta em voz e retornar os dados ao frontend.
+
+---
+
+## Como executar localmente
+
+### Clonar o repositório
+
+```bash
+git clone https://github.com/SEU-USUARIO/devvoice-ai.git
+cd devvoice-ai
+```
+
+### Configurar o backend
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Configurar a variável de ambiente
+
+Crie o arquivo `.env` dentro da pasta `backend/`:
+
+```env
+OPENAI_API_KEY=sua_chave_aqui
+```
+
+### Rodar o backend
+
+```bash
+uvicorn main:app --reload
+```
+
+Backend disponível em:
+
+```text
+http://127.0.0.1:8000
+```
+
+Documentação da API:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### Rodar o frontend
+
+Em outro terminal:
+
+```bash
+cd frontend
+python -m http.server 5500
+```
+
+Frontend disponível em:
+
+```text
+http://127.0.0.1:5500
+```
+
+---
+
+## Variáveis de ambiente
+
+```env
+OPENAI_API_KEY=...
+```
+
+---
+
+## Autor
+
+**Bryan Duarte de Araujo Pereira**  
+Estudante de Engenharia de Software focado em desenvolvimento, aprendizado contínuo e projetos práticos.
